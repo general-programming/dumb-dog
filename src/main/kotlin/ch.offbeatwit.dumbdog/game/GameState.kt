@@ -6,4 +6,6 @@ package ch.offbeatwit.dumbdog.game
  */
 class GameState {
     val rooms: HashMap<String, Room> = hashMapOf()
+    val generator = IdGenerator()
+    val questions = QuestionManager(this)
 }
