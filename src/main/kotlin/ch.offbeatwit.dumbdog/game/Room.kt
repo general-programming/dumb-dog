@@ -1,23 +1,26 @@
 package ch.offbeatwit.dumbdog.game
 
 import ch.offbeatwit.dumbdog.game.net.packets.PacketBase
+import ch.offbeatwit.dumbdog.game.net.packets.PacketNewRound
 import ch.offbeatwit.dumbdog.game.net.packets.PacketRoomUpdate
+import kotlinx.coroutines.experimental.delay
+import java.util.concurrent.TimeUnit
 
 /**
  * Written by @offbeatwitch.
  * Licensed under MIT.
  */
-class Room(val id: String, val owner: User) {
+class Room(val id: String, val owner: User, val gameState: GameState) {
     val players: ArrayList<Player> = arrayListOf()
     var state: RoomState = RoomState.WAITING
     var scoreThreshold = 10
-    @Transient var current: Question? = null
+    @Transient private var current: Question? = null
 
-    fun answerSubmitted() {
+    suspend fun answerSubmitted() {
         if (players.all { it.hasAnswered() }) {
             // All players have answered, calculate scores
             players.forEach {
-                if (it.answer == current!!.imageKey) {
+                if (it.answer == current!!.text) {
                     it.correct++
                 } else {
                     it.incorrect++
@@ -31,7 +34,21 @@ class Room(val id: String, val owner: User) {
             }
 
             this.syncPlayers()
+            delay(5, TimeUnit.SECONDS)
+            this.nextRound()
         }
+    }
+
+    fun nextRound() {
+        this.current = gameState.questions.randomQuestion()
+        val choices = arrayOf(
+                current!!.text,
+                gameState.questions.randomQuestionText(),
+                gameState.questions.randomQuestionText(),
+                gameState.questions.randomQuestionText()
+        )
+
+        this.broadcast(PacketNewRound(choices, current!!.imageKey))
     }
 
     fun syncPlayers() {
@@ -47,9 +64,10 @@ class Room(val id: String, val owner: User) {
     class Builder {
         var id: String? = null
         var owner: User? = null
+        var gameState: GameState? = null
 
         fun build(): Room {
-            return Room(id!!, owner!!)
+            return Room(id!!, owner!!, gameState!!)
         }
     }
 

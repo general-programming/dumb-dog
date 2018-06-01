@@ -11,8 +11,8 @@ import io.ktor.sessions.sessions
  * Written by @offbeatwitch.
  * Licensed under MIT.
  */
-class NetHandlerLogin(val conn: UserConnection): NetHandler(conn.socket) {
-    override fun processPacket(packet: PacketWrapper) {
+class NetHandlerLogin(val conn: UserConnection): NetHandler(conn.socket, UserConnection.State.LOGIN) {
+    override suspend fun processPacket(packet: PacketWrapper) {
         if (packet.t == "HELLO") {
             val session: UserSession? = conn.socket.call.sessions.get()
             if (session == null) {
@@ -20,7 +20,6 @@ class NetHandlerLogin(val conn: UserConnection): NetHandler(conn.socket) {
                 return
             }
 
-            conn.state = UserConnection.State.LOBBY
             conn.handler = NetHandlerLobby(conn, session.user)
 
             respond(PacketOk("Logged in successfully!"))

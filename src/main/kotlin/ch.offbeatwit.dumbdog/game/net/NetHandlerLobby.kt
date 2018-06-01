@@ -8,8 +8,8 @@ import ch.offbeatwit.dumbdog.game.net.packets.*
  * Written by @offbeatwitch.
  * Licensed under MIT.
  */
-class NetHandlerLobby(val conn: UserConnection, val user: User): NetHandler(conn.socket) {
-    override fun processPacket(packet: PacketWrapper) {
+class NetHandlerLobby(val conn: UserConnection, val user: User): NetHandler(conn.socket, UserConnection.State.LOBBY) {
+    override suspend fun processPacket(packet: PacketWrapper) {
         when (packet.t) {
             "SET_USERNAME" -> {
                 val pkt: PacketSetUsername = gson.fromJson(packet.d, PacketSetUsername::class.java)
@@ -36,7 +36,6 @@ class NetHandlerLobby(val conn: UserConnection, val user: User): NetHandler(conn
 
             room.players.add(player)
 
-            conn.state = UserConnection.State.GAME
             conn.handler = NetHandlerGame(conn, player)
             respond(PacketOk("Joined room successfully.")) // TODO: PacketChangeState
         } else {

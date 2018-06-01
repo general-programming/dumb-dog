@@ -12,7 +12,7 @@ import kotlinx.coroutines.experimental.async
  * Written by @offbeatwitch.
  * Licensed under MIT.
  */
-abstract class NetHandler(val socket: WebSocketSession) {
+abstract class NetHandler(val socket: WebSocketSession, val state: UserConnection.State) {
     val gson = Gson()
 
     fun respond(packet: PacketBase) {
@@ -24,7 +24,7 @@ abstract class NetHandler(val socket: WebSocketSession) {
         }
     }
 
-    fun processFrame(frame: Frame.Text) {
+    suspend fun processFrame(frame: Frame.Text) {
         val text = frame.readText()
         val packet: PacketWrapper = gson.fromJson(text, PacketWrapper::class.java)
 
@@ -35,5 +35,5 @@ abstract class NetHandler(val socket: WebSocketSession) {
 
     }
 
-    abstract fun processPacket(packet: PacketWrapper)
+    abstract suspend fun processPacket(packet: PacketWrapper)
 }

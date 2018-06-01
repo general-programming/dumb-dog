@@ -8,12 +8,12 @@ import ch.offbeatwit.dumbdog.game.net.packets.PacketWrapper
  * Written by @offbeatwitch.
  * Licensed under MIT.
  */
-class NetHandlerGame(val conn: UserConnection, val player: Player): NetHandler(conn.socket) {
+class NetHandlerGame(val conn: UserConnection, val player: Player): NetHandler(conn.socket, UserConnection.State.GAME) {
     init {
         player.netHandler = this
     }
 
-    override fun processPacket(packet: PacketWrapper) {
+    override suspend fun processPacket(packet: PacketWrapper) {
         when (packet.t) {
             "SUBMIT" -> {
                 val pkt: PacketSubmitAnswer = gson.fromJson(packet.d, PacketSubmitAnswer::class.java)
@@ -21,12 +21,12 @@ class NetHandlerGame(val conn: UserConnection, val player: Player): NetHandler(c
             }
 
             "LEAVE_ROOM" -> {
-                this.processDisconnect()
+                conn.handler = NetHandlerLobby(conn, player)
             }
         }
     }
 
-    fun handleSubmitAnswer(pkt: PacketSubmitAnswer) {
+    suspend fun handleSubmitAnswer(pkt: PacketSubmitAnswer) {
         player.answer = pkt.answerKey
         player.room.answerSubmitted()
     }

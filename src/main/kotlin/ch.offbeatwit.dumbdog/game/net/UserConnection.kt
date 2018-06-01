@@ -9,10 +9,9 @@ import io.ktor.websocket.WebSocketSession
  * Licensed under MIT.
  */
 class UserConnection(val socket: WebSocketSession, val gameState: GameState) {
-    var state: State = State.LOGIN
     var handler: NetHandler = NetHandlerLogin(this)
 
-    fun processFrame(frame: Frame.Text) {
+    suspend fun processFrame(frame: Frame.Text) {
         this.handler.processFrame(frame)
     }
 
