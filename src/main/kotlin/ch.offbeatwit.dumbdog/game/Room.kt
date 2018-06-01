@@ -41,14 +41,15 @@ class Room(val id: String, val owner: User, val gameState: GameState) {
 
     fun nextRound() {
         this.current = gameState.questions.randomQuestion()
-        val choices = arrayOf(
+        val choices = mutableListOf(
                 current!!.text,
                 gameState.questions.randomQuestionText(),
                 gameState.questions.randomQuestionText(),
                 gameState.questions.randomQuestionText()
         )
+        choices.sortBy { Math.random() }
 
-        this.broadcast(PacketNewRound(choices, current!!.imageKey))
+        this.broadcast(PacketNewRound(choices.toTypedArray(), current!!.imageKey))
     }
 
     fun syncPlayers() {

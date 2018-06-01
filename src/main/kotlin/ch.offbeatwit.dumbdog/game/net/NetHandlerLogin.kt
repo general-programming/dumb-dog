@@ -1,7 +1,7 @@
 package ch.offbeatwit.dumbdog.game.net
 
+import ch.offbeatwit.dumbdog.game.net.packets.PacketChangeState
 import ch.offbeatwit.dumbdog.game.net.packets.PacketFail
-import ch.offbeatwit.dumbdog.game.net.packets.PacketOk
 import ch.offbeatwit.dumbdog.game.net.packets.PacketWrapper
 import ch.offbeatwit.dumbdog.session.UserSession
 import io.ktor.sessions.get
@@ -24,7 +24,7 @@ class NetHandlerLogin(val conn: UserConnection): NetHandler(conn.socket, UserCon
                 conn.handler = NetHandlerLobby(conn, conn.gameState.getSessionUser()!!)
             }
 
-            respond(PacketOk("Logged in successfully!"))
+            respond(PacketChangeState(conn.handler.state))
         }
     }
 }

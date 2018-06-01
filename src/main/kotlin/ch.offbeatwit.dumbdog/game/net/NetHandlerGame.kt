@@ -1,6 +1,7 @@
 package ch.offbeatwit.dumbdog.game.net
 
 import ch.offbeatwit.dumbdog.game.Player
+import ch.offbeatwit.dumbdog.game.net.packets.PacketChangeState
 import ch.offbeatwit.dumbdog.game.net.packets.PacketSubmitAnswer
 import ch.offbeatwit.dumbdog.game.net.packets.PacketWrapper
 
@@ -22,6 +23,7 @@ class NetHandlerGame(val conn: UserConnection, val player: Player): NetHandler(c
 
             "LEAVE_ROOM" -> {
                 conn.handler = NetHandlerLobby(conn, player)
+                respond(PacketChangeState(conn.handler.state))
             }
         }
     }

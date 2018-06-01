@@ -37,7 +37,7 @@ class NetHandlerLobby(val conn: UserConnection, val user: User): NetHandler(conn
             room.players.add(player)
 
             conn.handler = NetHandlerGame(conn, player)
-            respond(PacketOk("Joined room successfully.")) // TODO: PacketChangeState
+            respond(PacketChangeState(conn.handler.state))
         } else {
             respond(PacketFail(404, "That room doesn't exist!"))
         }

@@ -1,5 +1,7 @@
 package ch.offbeatwit.dumbdog.routes
 
+import ch.offbeatwit.dumbdog.error.NotFoundException
+import ch.offbeatwit.dumbdog.error.UnauthorizedException
 import ch.offbeatwit.dumbdog.game.GameState
 import ch.offbeatwit.dumbdog.game.Room
 import ch.offbeatwit.dumbdog.session.UserSession
@@ -22,15 +24,11 @@ fun Routing.rooms(state: GameState) {
         if (state.rooms.containsKey(roomId))
             call.respond(state.rooms[roomId]!!)
         else
-            call.respond(Failure(404, "Room does not exist."))
+            throw NotFoundException("That room doesn't exist.")
     }
 
     post("/api/rooms/create") {
-        val session: UserSession? = call.sessions.get()
-        if (session == null) {
-            call.respond(Failure(401, "Not logged in!"))
-            return@post
-        }
+        val session: UserSession = call.sessions.get() ?: throw UnauthorizedException("Not logged in!")
 
         val room = Room.Builder().also {
             it.id = state.generator.generateHumanId()

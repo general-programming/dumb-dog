@@ -28,7 +28,7 @@ class QuestionManager(private val state: GameState) {
 
         keys = questions.keys.toTypedArray()
 
-        println(keys.joinToString(", ", "[", "]"))
+//        println(keys.joinToString(", ", "[", "]"))
     }
 
     fun randomQuestion(): Question {
