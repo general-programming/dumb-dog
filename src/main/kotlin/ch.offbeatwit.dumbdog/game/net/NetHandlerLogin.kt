@@ -20,7 +20,9 @@ class NetHandlerLogin(val conn: UserConnection): NetHandler(conn.socket, UserCon
                 return
             }
 
-            conn.handler = NetHandlerLobby(conn, session.user)
+            session.apply {
+                conn.handler = NetHandlerLobby(conn, conn.gameState.getSessionUser()!!)
+            }
 
             respond(PacketOk("Logged in successfully!"))
         }

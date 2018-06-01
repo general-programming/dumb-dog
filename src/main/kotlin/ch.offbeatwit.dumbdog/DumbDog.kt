@@ -19,7 +19,7 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.sessions.SessionStorageMemory
 import io.ktor.sessions.Sessions
-import io.ktor.sessions.header
+import io.ktor.sessions.cookie
 import io.ktor.websocket.WebSockets
 import java.time.Duration
 
@@ -37,9 +37,7 @@ fun Application.main() {
     }
 
     install(Sessions) {
-        header("X-User", UserSession::class, SessionStorageMemory()) {
-
-        }
+        cookie("dumb_user", UserSession::class, SessionStorageMemory())
     }
 
     install(StatusPages)

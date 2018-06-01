@@ -7,7 +7,9 @@ import io.ktor.application.call
 import io.ktor.request.receiveOrNull
 import io.ktor.response.respond
 import io.ktor.routing.Routing
+import io.ktor.routing.get
 import io.ktor.routing.post
+import io.ktor.sessions.get
 import io.ktor.sessions.sessions
 import io.ktor.sessions.set
 import java.util.*
@@ -28,8 +30,23 @@ fun Routing.users(state: GameState) {
             }
         }.build()
 
-        call.sessions.set(UserSession(user))
+        state.users[user.id] = user
+        call.sessions.set(UserSession(user.id))
         call.respond(UserLoginResponse(user.id, user.username))
+    }
+
+    get("/api/users/@me") {
+        val session: UserSession? = call.sessions.get()
+        if (session == null) {
+            call.respond(Failure(401, "Not logged in!"))
+            return@get // TODO: We should throw an exception and handle it
+        }
+
+        session.apply {
+            val user = state.getSessionUser()!!
+
+            call.respond(user)
+        }
     }
 }
 

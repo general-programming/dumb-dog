@@ -34,7 +34,7 @@ fun Routing.rooms(state: GameState) {
 
         val room = Room.Builder().also {
             it.id = state.generator.generateHumanId()
-            it.owner = session.user
+            it.owner = state.users[session.id]
             it.gameState = state
         }.build()
 
