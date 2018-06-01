@@ -6,4 +6,4 @@ import ch.offbeatwit.dumbdog.game.User
  * Written by @offbeatwitch.
  * Licensed under MIT.
  */
-data class UserSession(val player: User)
+data class UserSession(val user: User)

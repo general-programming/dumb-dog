@@ -19,11 +19,19 @@ class NetHandlerGame(val conn: UserConnection, val player: Player): NetHandler(c
                 val pkt: PacketSubmitAnswer = gson.fromJson(packet.d, PacketSubmitAnswer::class.java)
                 this.handleSubmitAnswer(pkt)
             }
+
+            "LEAVE_ROOM" -> {
+                this.processDisconnect()
+            }
         }
     }
 
     fun handleSubmitAnswer(pkt: PacketSubmitAnswer) {
         player.answer = pkt.answerKey
         player.room.answerSubmitted()
+    }
+
+    override fun processDisconnect() {
+        player.leaveRoom()
     }
 }

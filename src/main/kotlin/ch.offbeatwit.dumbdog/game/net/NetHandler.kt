@@ -31,5 +31,9 @@ abstract class NetHandler(val socket: WebSocketSession) {
         this.processPacket(packet)
     }
 
+    open fun processDisconnect() {
+
+    }
+
     abstract fun processPacket(packet: PacketWrapper)
 }

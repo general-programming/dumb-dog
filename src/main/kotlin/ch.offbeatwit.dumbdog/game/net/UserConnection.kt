@@ -16,6 +16,10 @@ class UserConnection(val socket: WebSocketSession, val gameState: GameState) {
         this.handler.processFrame(frame)
     }
 
+    fun handleDisconnect(isCloseFrame: Boolean, frame: Frame.Close?) {
+        this.handler.processDisconnect()
+    }
+
     enum class State {
         LOGIN,
         LOBBY,

@@ -1,5 +1,6 @@
 package ch.offbeatwit.dumbdog.game
 
+import ch.offbeatwit.dumbdog.game.net.packets.PacketBase
 import ch.offbeatwit.dumbdog.game.net.packets.PacketRoomUpdate
 
 /**
@@ -9,6 +10,7 @@ import ch.offbeatwit.dumbdog.game.net.packets.PacketRoomUpdate
 class Room(val id: String, val owner: User) {
     val players: ArrayList<Player> = arrayListOf()
     var state: RoomState = RoomState.WAITING
+    var scoreThreshold = 10
     @Transient var current: Question? = null
 
     fun answerSubmitted() {
@@ -20,9 +22,25 @@ class Room(val id: String, val owner: User) {
                 } else {
                     it.incorrect++
                 }
+
+                it.cleanup()
+
+                if (it.score >= it.room.scoreThreshold) {
+                    // Player wins
+                }
             }
 
-            players.forEach { it.netHandler?.respond(PacketRoomUpdate(this)) }
+            this.syncPlayers()
+        }
+    }
+
+    fun syncPlayers() {
+        this.broadcast(PacketRoomUpdate(this))
+    }
+
+    fun broadcast(packet: PacketBase) {
+        for (player in players) {
+            player.netHandler?.respond(packet)
         }
     }
 

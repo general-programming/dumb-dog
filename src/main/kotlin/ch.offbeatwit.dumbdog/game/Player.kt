@@ -22,4 +22,9 @@ class Player(uuid: UUID, val room: Room): User(uuid) {
     fun cleanup() {
         answer = null
     }
+
+    fun leaveRoom() {
+        room.players.remove(this)
+        room.syncPlayers()
+    }
 }
