@@ -7,7 +7,7 @@ import java.util.*
  * Written by @offbeatwitch.
  * Licensed under MIT.
  */
-class Player(uuid: UUID, val room: Room): User(uuid) {
+class Player(uuid: UUID, @Transient val room: Room): User(uuid) {
     @Transient var netHandler: NetHandlerGame? = null
     var correct = 0
     var incorrect = 0

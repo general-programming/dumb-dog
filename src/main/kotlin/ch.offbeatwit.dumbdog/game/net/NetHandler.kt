@@ -16,11 +16,15 @@ abstract class NetHandler(val socket: WebSocketSession, val state: UserConnectio
     val gson = Gson()
 
     fun respond(packet: PacketBase) {
-        val payload = gson.toJsonTree(packet)
-        val res = gson.toJson(PacketWrapper(packet.typeName, payload))
+        try {
+            val payload = gson.toJsonTree(packet)
+            val res = gson.toJson(PacketWrapper(packet.typeName, payload))
 
-        async {
-            socket.outgoing.send(Frame.Text(res))
+            async {
+                socket.outgoing.send(Frame.Text(res))
+            }
+        } catch (err: StackOverflowError) {
+            err.printStackTrace()
         }
     }
 
