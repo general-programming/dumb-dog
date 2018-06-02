@@ -102,7 +102,6 @@ div.links > a:not(:last-child):after {
 }
 
 #app {
-    position: fixed; /* yeah don't ask */
     padding: 0 10px;
     box-sizing: border-box;
     width: 100%;
@@ -117,34 +116,14 @@ div.links > a:not(:last-child):after {
 
 .box {
     position: relative;
-    display: inline-block;
+    display: block;
     height: 200px;
     margin-top: 10px;
+    text-align: center;
 }
 
 .box h3 {
     margin-top: 0;
-}
-
-.box.left {
-    padding-right: 40px;
-    text-align: right;
-    border-right: 1px solid #fff;
-}
-
-.box.left::after {
-    position: absolute;
-    content: 'OR';
-    background: #222;
-    top: 83px;
-    right: -11px;
-    font-weight: 200;
-    padding: 5px 0;
-}
-
-.box.right {
-    padding-left: 40px;
-    text-align: left;
 }
 
 button:not(:last-of-type) {
@@ -162,18 +141,12 @@ button.t {
 }
 
 .gamebox > * {
-    display: inline-block;
+    display: block;
     vertical-align: top;
     box-sizing: border-box;
 }
 
-.gamebox > .menu {
-    width: 30%;
-}
-
 .gamebox > .game {
-    width: 70%;
-    height: 100%;
     text-align: center;
 }
 
@@ -188,6 +161,7 @@ button.t {
 }
 
 .game select {
+    max-width: 100%;
     padding: 10px;
     background: transparent;
     color: #fff;
@@ -196,10 +170,75 @@ button.t {
 }
 
 .game img {
+    max-width: 100%;
     width: auto;
     height: 90%;
 }
 
-.game.party select {
+.game.party:not(.host) img {
     display: none;
+}
+
+.game.party.host select {
+    display: none;
+}
+
+@media (min-width: 700px) {
+    #app {
+        position: fixed;
+    }
+
+    .box {
+        display: inline-block;
+    }
+
+    .box.left {
+        padding-right: 40px;
+        text-align: right;
+        border-right: 1px solid #fff;
+    }
+
+    .box.left::after {
+        position: absolute;
+        content: 'OR';
+        background: #222;
+        top: 83px;
+        right: -11px;
+        font-weight: 200;
+        padding: 5px 0;
+    }
+
+    .box.right {
+        padding-left: 40px;
+        text-align: left;
+    }
+
+    .gamebox > * {
+        display: inline-block;
+    }
+
+    .gamebox > .menu {
+        width: 30%;
+    }
+
+    .gamebox > .game {
+        width: 70%;
+        height: 100%;
+    }
+}
+
+@media (max-width: 700px) {
+    .gamebox .menu > span {
+        display: none;
+    }
+
+    .gamebox .menu .host button {
+        width: 100%;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .gamebox .menu > button.t {
+        width: 100%;
+    }
 }

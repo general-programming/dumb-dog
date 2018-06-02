@@ -416,12 +416,13 @@
             }
         },
         view: (vnode) => {
-            var shouldHideSelect = DumbDog.rooms.isPartyMode() && DumbDog.auth.doesOwnCurrentRoom();
+            var gameClass = "";
+            if (DumbDog.rooms.isPartyMode()) gameClass += "party";
+            if (DumbDog.auth.doesOwnCurrentRoom()) gameClass += "host";
 
             return m("div.gamebox", [
                 m("div.menu", [
-                    m("span", "Room slug:"),
-                    m(ClipboardTextZone, { value: vnode.attrs.id }),
+                    m("span", "Room slug: ", m(ClipboardTextZone, { value: vnode.attrs.id })),
                     m("p", "You can also give the URL directly to your friends!"),
                     DumbDog.auth.doesOwnCurrentRoom() ? [
                         m(HostUtilities)
@@ -434,7 +435,7 @@
                         })
                     )
                 ]),
-                m("div.game", { className: shouldHideSelect ? "party" : "" }, DumbDog.round.hasStarted() ? [
+                m("div.game", { className: gameClass }, DumbDog.round.hasStarted() ? [
                     m("img", { src: DumbDog.round.getImageUrl() }),
                     m("select", { oninput: m.withAttr("value", DumbDog.round.setAnswer) },
                         m("option[selected]", { value: "" }, "Select answer..."),
