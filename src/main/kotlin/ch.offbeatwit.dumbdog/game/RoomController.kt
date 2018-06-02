@@ -21,6 +21,7 @@ class RoomController(val gameState: GameState, val room: Room) {
 
         if (room.players.all { it.hasAnswered() } || override) {
             // All players have answered, calculate scores
+            val question = room.current!!
             room.current = null
 
             if (room.timeoutJob != null)
@@ -30,7 +31,7 @@ class RoomController(val gameState: GameState, val room: Room) {
             var hasPlayerWon = false
 
             room.players.forEach {
-                if (it.answer == room.current!!.text) {
+                if (it.answer == question.text) {
                     it.correct++
                     correct.add(it)
                 } else {

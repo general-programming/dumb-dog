@@ -21,6 +21,10 @@ class Room(val id: String, val owner: User) {
         return RoomController(gameState, this)
     }
 
+    fun isOwner(player: Player): Boolean {
+        return player.id == owner.id
+    }
+
     fun broadcast(packet: PacketBase) {
         for (player in players) {
             player.netHandler?.respond(packet)

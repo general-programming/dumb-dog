@@ -23,16 +23,20 @@ abstract class NetHandler(val socket: WebSocketSession, val state: UserConnectio
             async {
                 socket.outgoing.send(Frame.Text(res))
             }
-        } catch (err: StackOverflowError) {
+        } catch (err: Throwable) {
             err.printStackTrace()
         }
     }
 
     suspend fun processFrame(frame: Frame.Text) {
-        val text = frame.readText()
-        val packet: PacketWrapper = gson.fromJson(text, PacketWrapper::class.java)
+        try {
+            val text = frame.readText()
+            val packet: PacketWrapper = gson.fromJson(text, PacketWrapper::class.java)
 
-        this.processPacket(packet)
+            this.processPacket(packet)
+        } catch (err: Throwable) {
+            err.printStackTrace()
+        }
     }
 
     open fun processDisconnect() {

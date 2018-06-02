@@ -33,6 +33,7 @@ class NetHandlerLobby(val conn: UserConnection, val user: User): NetHandler(conn
         if (conn.gameState.rooms.containsKey(pkt.slug)) {
             val room = conn.gameState.rooms[pkt.slug]!!
             val player = Player(user.id, room)
+            player.username = user.username
 
             room.players.add(player)
 

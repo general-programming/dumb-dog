@@ -5,7 +5,7 @@
             user: null,
             username: null,
             setUsername: function(username) {
-                this.username = username;
+                DumbDog.auth.username = username;
             },
             isLoggedIn: function() {
                 return this.user != null;
@@ -15,7 +15,7 @@
                     method: "POST",
                     url: "/api/login",
                     data: {
-                        username: this.username
+                        username: DumbDog.auth.username
                     }
                 }).then(res => {
                     this.user = {
@@ -87,6 +87,16 @@
                 if (DumbDog.auth.doesOwnCurrentRoom()) {
                     DumbDog.socket.send("START_GAME", {})
                 }
+            },
+            skip: function() {
+                if (DumbDog.auth.doesOwnCurrentRoom()) {
+                    DumbDog.socket.send("SKIP_ROUND", {})
+                }
+            },
+            getPlayers: function() {
+                if (this.room == null) return [];
+
+                return this.room.players;
             }
         },
         socket: {
@@ -146,8 +156,19 @@
                 },
                 "NEW_ROUND": (round) => {
                     DumbDog.round.current = round;
+                    DumbDog.round.postRoundInfo = null;
 
                     m.redraw();
+                },
+                "END_ROUND": (info) => {
+                    DumbDog.round.current = null;
+                    DumbDog.round.answer = null;
+
+                    if (info.isGameEnd) {
+                        // handle this in some way
+                    }
+
+                    DumbDog.round.postRoundInfo = info;
                 }
             }
         },
@@ -167,6 +188,10 @@
                 this.answer = val;
 
                 DumbDog.socket.send("SUBMIT", { answerKey: val });
+            },
+            postRoundInfo: null,
+            isPostRound: function() {
+                return this.postRoundInfo != null;
             }
         },
         util: {
@@ -180,16 +205,15 @@
 
     // Components
     var SubmittableInput = {
-        oninit: (vnode) => {
-            vnode.attrs.onkeypress = (ev) => {
-                console.log(ev);
-                if (ev.which === 13) {
-                    ev.preventDefault();
-                    vnode.attrs.onsubmit(ev);
-                }
-            };
+        onkeypress: function(ev) {
+            if (ev.keyCode === 13) {
+                ev.preventDefault();
+                this.attrs.onsubmit();
+            }
         },
         view: (vnode) => {
+            vnode.attrs.onkeypress = vnode.state.onkeypress.bind(vnode);
+
             return m("div", [
                 m("input[type=text]", vnode.attrs),
                 m("button", { onclick: vnode.attrs.onsubmit }, vnode.children)
@@ -198,12 +222,12 @@
     };
 
     var ClipboardTextZone = {
-        oninit: (vnode) => {
-            vnode.attrs.onfocus = (ev) => {
-                ev.target.select();
-            };
+        onfocus: function(ev) {
+            ev.target.select();
         },
         view: (vnode) => {
+            vnode.attrs.onfocus = vnode.state.onfocus.bind(vnode);
+
             return m("input#clipzone[type=text][readonly]", vnode.attrs)
         }
     };
@@ -239,6 +263,15 @@
                     placeholder: "Room slug"
                 }, "Join >>")
             ])
+        }
+    };
+
+    var HostUtilities = {
+        view: (vnode) => {
+            return m("div.host", [
+                m("button", { onclick: DumbDog.rooms.startGame }, "Start Game"),
+                m("button", { onclick: DumbDog.rooms.skip }, "Skip Round")
+            ]);
         }
     };
 
@@ -316,8 +349,15 @@
                     m("span", "Room slug:"),
                     m(ClipboardTextZone, { value: vnode.attrs.id }),
                     m("p", "You can also give the URL directly to your friends!"),
-                    m("button", { onclick: DumbDog.rooms.startGame, disabled: !DumbDog.auth.doesOwnCurrentRoom() }, "Start Game")
+                    DumbDog.auth.doesOwnCurrentRoom() ? [
+                        m(HostUtilities)
+                    ] : []
                 ]),
+                m("ul.players", DumbDog.rooms.getPlayers().map(
+                    (player) => {
+                        return m("li.player", player.username + ` (${player.correct - player.incorrect} points)`)
+                    })
+                ),
                 m("div.game", DumbDog.round.hasStarted() ? [
                     m("img", { src: DumbDog.round.getImageUrl() }),
                     m("select", { oninput: m.withAttr("value", DumbDog.round.setAnswer) }, DumbDog.round.getOptions().map(
