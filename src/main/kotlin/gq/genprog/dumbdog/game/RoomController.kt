@@ -3,6 +3,7 @@ package gq.genprog.dumbdog.game
 import gq.genprog.dumbdog.game.net.packets.PacketNewRound
 import gq.genprog.dumbdog.game.net.packets.PacketRoomUpdate
 import gq.genprog.dumbdog.game.net.packets.PacketRoundEnd
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.time.delay
@@ -48,8 +49,11 @@ class RoomController(val gameState: GameState, val room: Room) {
 
             room.broadcast(PacketRoundEnd(correct, hasPlayerWon))
             this.syncPlayers()
-            delay(5, TimeUnit.SECONDS)
-            this.nextRound()
+
+            async {
+                delay(5, TimeUnit.SECONDS)
+                this@RoomController.nextRound()
+            }
         }
     }
 

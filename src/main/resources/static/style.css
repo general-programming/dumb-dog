@@ -1,0 +1,71 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #222;
+    color: #fff;
+    font-family: sans-serif;
+}
+
+input {
+    padding: 10px;
+    border: 0;
+    border-bottom: 3px solid #fff;
+    background: transparent;
+    color: #fff;
+    /*margin: 5px;*/
+    /*border-radius: 5px;*/
+}
+
+button {
+    padding: 10px 20px;
+    border: 3px solid #fff;
+    background: transparent;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s;
+}
+
+button.attached {
+    border-radius: 10px 10px 10px 0;
+}
+
+button:hover {
+    background: #fff;
+    color: #111;
+}
+
+.nav {
+    padding: 5px 10px;
+    background: #333;
+    border-bottom: 2px solid;
+    border-image: linear-gradient(180deg, #333, #222);
+    margin-bottom: 5px;
+}
+
+#app {
+    padding: 0 10px;
+}
+
+.box {
+    display: inline-block;
+    margin: 0;
+    width: 50%;
+    text-align: center;
+}
+
+button:not(:last-child) {
+    margin-right: 10px;
+}
+
+.game > * {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.game > *:not(:last-child) {
+    margin-right: 15px;
+}

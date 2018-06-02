@@ -1,4 +1,6 @@
 (function () {
+    var messageMount = document.getElementById("msg-mount");
+
     // Model
     var DumbDog = {
         auth: {
@@ -139,6 +141,10 @@
 
                     this.ws = null;
                     this.connected = false;
+
+                    if (frame.code !== 403) {
+                        setTimeout(DumbDog.socket.connect.bind(DumbDog.socket), 3000)
+                    }
                 };
 
                 return new Promise((resolve, reject) => {
@@ -155,9 +161,17 @@
             send: function(type, packet) {
                 var data = JSON.stringify({ t: type, d: packet || {} });
 
+                console.log("SEND: " + type);
+
                 this.ws.send(data);
             },
             handlers: {
+                "ERROR": (err) => {
+                    DumbDog.socket.ws.close(err.status, err.message)
+                },
+                "OK": () => {
+                    // m.mount(messageMount, null);
+                },
                 "ROOM_UPDATE": (pkt) => {
                     DumbDog.rooms.room = pkt.room;
 
@@ -190,10 +204,14 @@
                 return "/images/" + this.current.key
             },
             getOptions: function() {
-                return this.current.options.sort((a, b) => Math.random() > 0.5);
+                if (!this.hasStarted()) return [];
+
+                return this.current.options;
             },
             answer: null,
             setAnswer: function(val) {
+                if (val === "") return;
+
                 this.answer = val;
 
                 DumbDog.socket.send("SUBMIT", { answerKey: val });
@@ -225,7 +243,7 @@
 
             return m("div", [
                 m("input[type=text]", vnode.attrs),
-                m("button", { onclick: vnode.attrs.onsubmit }, vnode.children)
+                m("button.attached", { onclick: vnode.attrs.onsubmit }, vnode.children)
             ]);
         }
     };
@@ -238,6 +256,14 @@
             vnode.attrs.onfocus = vnode.state.onfocus.bind(vnode);
 
             return m("input#clipzone[type=text][readonly]", vnode.attrs)
+        }
+    };
+
+    var Message = {
+        view: (vnode) => {
+            return m("div.message", vnode.attrs, [
+                m("p", vnode.children)
+            ]);
         }
     };
 
@@ -316,12 +342,18 @@
         oninit: async () => {
             await DumbDog.auth.checkState();
 
-            if (DumbDog.auth.isLoggedIn()) {
+            if (DumbDog.auth.isLoggedIn() && !DumbDog.socket.connected) {
                 DumbDog.socket.connect().then(() => {
                     DumbDog.socket.send("HELLO", {});
+
+                    if (DumbDog.rooms.canJoin()) {
+                        m.route.set("/room/:id", { id: DumbDog.rooms.roomName })
+                    }
                 }).catch(err => {
                     console.error(err)
                 });
+            } else if (!DumbDog.auth.isLoggedIn()) {
+                m.route.set("/splash")
             }
         },
         view: () => {
@@ -339,12 +371,10 @@
     var Room = {
         oninit: async (vnode) => {
             if (!DumbDog.auth.isLoggedIn()) {
-                var roomState = {
-                    reqRoomSlug: vnode.attrs.id
-                };
-                m.route.set("/splash", {}, { state: roomState });
+                await DumbDog.auth.checkState();
 
-                // return await DumbDog.auth.checkState();
+                DumbDog.rooms.setName(vnode.attrs.id);
+                m.route.set("/splash");
             }
 
             if (!DumbDog.socket.connected) {
@@ -370,17 +400,18 @@
                     m("p", "You can also give the URL directly to your friends!"),
                     DumbDog.auth.doesOwnCurrentRoom() ? [
                         m(HostUtilities)
-                    ] : []
+                    ] : [],
+                    m("ul.players", DumbDog.rooms.getPlayers().map(
+                        (player) => {
+                            return m("li.player", player.username + ` (${player.correct} points)`)
+                        })
+                    )
                 ]),
-                m("ul.players", DumbDog.rooms.getPlayers().map(
-                    (player) => {
-                        return m("li.player", player.username + ` (${player.correct - player.incorrect} points)`)
-                    })
-                ),
                 m("div.game", DumbDog.round.hasStarted() ? [
                     m("img", { src: DumbDog.round.getImageUrl() }),
-                    m("select", { oninput: m.withAttr("value", DumbDog.round.setAnswer) }, DumbDog.round.getOptions().map(
-                        (item) => {
+                    m("select", { oninput: m.withAttr("value", DumbDog.round.setAnswer) },
+                        m("option[selected]", { value: "" }, "Select answer..."),
+                        DumbDog.round.getOptions().map((item) => {
                             return m("option", { value: item }, "How To " + DumbDog.util.capitalize(item))
                         })
                     )
