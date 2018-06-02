@@ -1,6 +1,5 @@
-package ch.offbeatwit.dumbdog
+package gq.genprog.dumbdog
 
-import ch.offbeatwit.dumbdog.error.handlers
 import ch.offbeatwit.dumbdog.game.GameState
 import ch.offbeatwit.dumbdog.routes.Failure
 import ch.offbeatwit.dumbdog.routes.rooms

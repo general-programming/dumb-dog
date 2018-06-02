@@ -1,4 +1,4 @@
-package ch.offbeatwit.dumbdog.error
+package gq.genprog.dumbdog.error
 
 import io.ktor.application.call
 import io.ktor.features.StatusPages

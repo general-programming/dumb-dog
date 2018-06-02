@@ -1,4 +1,4 @@
-package ch.offbeatwit.dumbdog
+package gq.genprog.dumbdog
 
 import java.io.BufferedReader
 import java.io.InputStreamReader

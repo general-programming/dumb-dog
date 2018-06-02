@@ -1,6 +1,5 @@
 package ch.offbeatwit.dumbdog.game
 
-import ch.offbeatwit.dumbdog.getResourceList
 import java.net.URL
 import java.util.*
 

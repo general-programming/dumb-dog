@@ -1,6 +1,5 @@
 package ch.offbeatwit.dumbdog.routes
 
-import ch.offbeatwit.dumbdog.error.UnauthorizedException
 import ch.offbeatwit.dumbdog.game.GameState
 import ch.offbeatwit.dumbdog.game.User
 import ch.offbeatwit.dumbdog.session.UserSession
