@@ -24,7 +24,7 @@ class NetHandlerGame(val conn: UserConnection, val player: Player): NetHandler(c
 
             "START_GAME" -> {
                 if (player.room.owner.id == player.id) {
-                    player.room.nextRound()
+                    player.room.controller(conn.gameState).nextRound()
                     respond(PacketOk("Started next round."))
                 }
             }
@@ -38,7 +38,7 @@ class NetHandlerGame(val conn: UserConnection, val player: Player): NetHandler(c
 
     suspend fun handleSubmitAnswer(pkt: PacketSubmitAnswer) {
         player.answer = pkt.answerKey
-        player.room.answerSubmitted(false)
+        player.room.controller(conn.gameState).answerSubmitted(false)
     }
 
     override fun processDisconnect() {

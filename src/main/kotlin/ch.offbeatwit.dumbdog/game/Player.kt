@@ -1,6 +1,7 @@
 package ch.offbeatwit.dumbdog.game
 
 import ch.offbeatwit.dumbdog.game.net.NetHandlerGame
+import ch.offbeatwit.dumbdog.game.net.packets.PacketRoomUpdate
 import java.util.*
 
 /**
@@ -25,6 +26,6 @@ class Player(uuid: UUID, @Transient val room: Room): User(uuid) {
 
     fun leaveRoom() {
         room.players.remove(this)
-        room.syncPlayers()
+        room.broadcast(PacketRoomUpdate(room))
     }
 }
