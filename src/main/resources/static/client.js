@@ -416,7 +416,9 @@
             }
         },
         view: (vnode) => {
-            return m("div.game", [
+            var shouldHideSelect = DumbDog.rooms.isPartyMode() && DumbDog.auth.doesOwnCurrentRoom();
+
+            return m("div.gamebox", [
                 m("div.menu", [
                     m("span", "Room slug:"),
                     m(ClipboardTextZone, { value: vnode.attrs.id }),
@@ -432,7 +434,7 @@
                         })
                     )
                 ]),
-                m("div.game", DumbDog.round.hasStarted() ? [
+                m("div.game", { className: shouldHideSelect ? "party" : "" }, DumbDog.round.hasStarted() ? [
                     m("img", { src: DumbDog.round.getImageUrl() }),
                     m("select", { oninput: m.withAttr("value", DumbDog.round.setAnswer) },
                         m("option[selected]", { value: "" }, "Select answer..."),

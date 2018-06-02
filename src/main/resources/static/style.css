@@ -1,6 +1,8 @@
 html, body {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    height: 100%;
 }
 
 body {
@@ -47,7 +49,7 @@ button.attached::before {
     height: 20px;
     width: 3px;
     background: #222;
-    transition: background-color .25s;
+    transition: height .25s;
 }
 
 button:hover {
@@ -56,7 +58,7 @@ button:hover {
 }
 
 button:hover::before {
-    background: #fff;
+    height: 0;
 }
 
 a {
@@ -100,7 +102,11 @@ div.links > a:not(:last-child):after {
 }
 
 #app {
+    position: fixed; /* yeah don't ask */
     padding: 0 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
 }
 
 .lobby {
@@ -149,16 +155,34 @@ button.t {
     margin-top: 10px;
 }
 
-.game > * {
+.gamebox {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.gamebox > * {
     display: inline-block;
     vertical-align: top;
+    box-sizing: border-box;
 }
 
-.game > *:not(:last-child) {
-    margin-right: 15px;
+.gamebox > .menu {
+    width: 30%;
 }
 
-.game ul.players {
+.gamebox > .game {
+    width: 70%;
+    height: 100%;
+    text-align: center;
+}
+
+.game > * {
+    display: block;
+    position: relative;
+}
+
+.menu ul.players {
     margin: 0;
     list-style: '@';
 }
@@ -169,4 +193,13 @@ button.t {
     color: #fff;
     border: 3px solid #fff;
     border-radius: 10px;
+}
+
+.game img {
+    width: auto;
+    height: 90%;
+}
+
+.game.party select {
+    display: none;
 }
