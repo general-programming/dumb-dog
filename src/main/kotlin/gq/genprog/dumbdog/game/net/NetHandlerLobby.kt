@@ -1,8 +1,8 @@
-package ch.offbeatwit.dumbdog.game.net
+package gq.genprog.dumbdog.game.net
 
-import ch.offbeatwit.dumbdog.game.Player
-import ch.offbeatwit.dumbdog.game.User
-import ch.offbeatwit.dumbdog.game.net.packets.*
+import gq.genprog.dumbdog.game.Player
+import gq.genprog.dumbdog.game.User
+import gq.genprog.dumbdog.game.net.packets.*
 
 /**
  * Written by @offbeatwitch.

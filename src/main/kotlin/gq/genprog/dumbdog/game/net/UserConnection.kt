@@ -1,6 +1,6 @@
-package ch.offbeatwit.dumbdog.game.net
+package gq.genprog.dumbdog.game.net
 
-import ch.offbeatwit.dumbdog.game.GameState
+import gq.genprog.dumbdog.game.GameState
 import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
 

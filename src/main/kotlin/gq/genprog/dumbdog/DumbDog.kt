@@ -1,11 +1,12 @@
 package gq.genprog.dumbdog
 
-import ch.offbeatwit.dumbdog.game.GameState
-import ch.offbeatwit.dumbdog.routes.Failure
-import ch.offbeatwit.dumbdog.routes.rooms
-import ch.offbeatwit.dumbdog.routes.users
-import ch.offbeatwit.dumbdog.routes.ws
-import ch.offbeatwit.dumbdog.session.UserSession
+import gq.genprog.dumbdog.error.handlers
+import gq.genprog.dumbdog.game.GameState
+import gq.genprog.dumbdog.routes.Failure
+import gq.genprog.dumbdog.routes.rooms
+import gq.genprog.dumbdog.routes.users
+import gq.genprog.dumbdog.routes.ws
+import gq.genprog.dumbdog.session.UserSession
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install

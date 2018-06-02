@@ -1,9 +1,9 @@
-package ch.offbeatwit.dumbdog.game.net
+package gq.genprog.dumbdog.game.net
 
-import ch.offbeatwit.dumbdog.game.Player
-import ch.offbeatwit.dumbdog.game.net.packets.PacketChangeState
-import ch.offbeatwit.dumbdog.game.net.packets.PacketSubmitAnswer
-import ch.offbeatwit.dumbdog.game.net.packets.PacketWrapper
+import gq.genprog.dumbdog.game.Player
+import gq.genprog.dumbdog.game.net.packets.PacketChangeState
+import gq.genprog.dumbdog.game.net.packets.PacketSubmitAnswer
+import gq.genprog.dumbdog.game.net.packets.PacketWrapper
 
 /**
  * Written by @offbeatwitch.

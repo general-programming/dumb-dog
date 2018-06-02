@@ -1,4 +1,4 @@
-package ch.offbeatwit.dumbdog.game.net.packets
+package gq.genprog.dumbdog.game.net.packets
 
 import com.google.gson.JsonElement
 

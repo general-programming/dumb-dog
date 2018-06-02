@@ -1,7 +1,7 @@
-package ch.offbeatwit.dumbdog.game
+package gq.genprog.dumbdog.game
 
-import ch.offbeatwit.dumbdog.game.net.NetHandlerGame
-import ch.offbeatwit.dumbdog.game.net.packets.PacketRoomUpdate
+import gq.genprog.dumbdog.game.net.NetHandlerGame
+import gq.genprog.dumbdog.game.net.packets.PacketRoomUpdate
 import java.util.*
 
 /**

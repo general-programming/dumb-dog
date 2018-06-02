@@ -1,7 +1,7 @@
-package ch.offbeatwit.dumbdog.routes
+package gq.genprog.dumbdog.routes
 
-import ch.offbeatwit.dumbdog.game.GameState
-import ch.offbeatwit.dumbdog.game.net.UserConnection
+import gq.genprog.dumbdog.game.GameState
+import gq.genprog.dumbdog.game.net.UserConnection
 import io.ktor.routing.Routing
 import io.ktor.websocket.Frame
 import io.ktor.websocket.webSocket

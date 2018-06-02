@@ -1,6 +1,6 @@
-package ch.offbeatwit.dumbdog.game.net.packets
+package gq.genprog.dumbdog.game.net.packets
 
-import ch.offbeatwit.dumbdog.game.net.UserConnection
+import gq.genprog.dumbdog.game.net.UserConnection
 
 /**
  * Written by @offbeatwitch.

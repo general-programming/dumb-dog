@@ -1,8 +1,8 @@
-package ch.offbeatwit.dumbdog.routes
+package gq.genprog.dumbdog.routes
 
-import ch.offbeatwit.dumbdog.game.GameState
-import ch.offbeatwit.dumbdog.game.User
-import ch.offbeatwit.dumbdog.session.UserSession
+import gq.genprog.dumbdog.game.GameState
+import gq.genprog.dumbdog.game.User
+import gq.genprog.dumbdog.session.UserSession
 import io.ktor.application.call
 import io.ktor.request.receiveOrNull
 import io.ktor.response.respond

@@ -1,8 +1,8 @@
-package ch.offbeatwit.dumbdog.game
+package gq.genprog.dumbdog.game
 
-import ch.offbeatwit.dumbdog.game.net.packets.PacketNewRound
-import ch.offbeatwit.dumbdog.game.net.packets.PacketRoomUpdate
-import ch.offbeatwit.dumbdog.game.net.packets.PacketRoundEnd
+import gq.genprog.dumbdog.game.net.packets.PacketNewRound
+import gq.genprog.dumbdog.game.net.packets.PacketRoomUpdate
+import gq.genprog.dumbdog.game.net.packets.PacketRoundEnd
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.time.delay

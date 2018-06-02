@@ -1,6 +1,6 @@
-package ch.offbeatwit.dumbdog.game
+package gq.genprog.dumbdog.game
 
-import ch.offbeatwit.dumbdog.game.net.packets.PacketBase
+import gq.genprog.dumbdog.game.net.packets.PacketBase
 import kotlinx.coroutines.experimental.Job
 import java.util.*
 

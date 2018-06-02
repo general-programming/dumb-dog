@@ -1,7 +1,7 @@
-package ch.offbeatwit.dumbdog.session
+package gq.genprog.dumbdog.session
 
-import ch.offbeatwit.dumbdog.game.GameState
-import ch.offbeatwit.dumbdog.game.User
+import gq.genprog.dumbdog.game.GameState
+import gq.genprog.dumbdog.game.User
 import java.util.*
 
 /**

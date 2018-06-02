@@ -1,4 +1,4 @@
-package ch.offbeatwit.dumbdog.game
+package gq.genprog.dumbdog.game
 
 import java.net.URL
 import java.util.*

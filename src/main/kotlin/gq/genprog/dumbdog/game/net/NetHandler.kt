@@ -1,8 +1,8 @@
-package ch.offbeatwit.dumbdog.game.net
+package gq.genprog.dumbdog.game.net
 
-import ch.offbeatwit.dumbdog.game.net.packets.PacketBase
-import ch.offbeatwit.dumbdog.game.net.packets.PacketWrapper
 import com.google.gson.Gson
+import gq.genprog.dumbdog.game.net.packets.PacketBase
+import gq.genprog.dumbdog.game.net.packets.PacketWrapper
 import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.readText

@@ -1,9 +1,9 @@
-package ch.offbeatwit.dumbdog.game.net
+package gq.genprog.dumbdog.game.net
 
-import ch.offbeatwit.dumbdog.game.net.packets.PacketChangeState
-import ch.offbeatwit.dumbdog.game.net.packets.PacketFail
-import ch.offbeatwit.dumbdog.game.net.packets.PacketWrapper
-import ch.offbeatwit.dumbdog.session.UserSession
+import gq.genprog.dumbdog.game.net.packets.PacketChangeState
+import gq.genprog.dumbdog.game.net.packets.PacketFail
+import gq.genprog.dumbdog.game.net.packets.PacketWrapper
+import gq.genprog.dumbdog.session.UserSession
 import io.ktor.sessions.get
 import io.ktor.sessions.sessions
 
