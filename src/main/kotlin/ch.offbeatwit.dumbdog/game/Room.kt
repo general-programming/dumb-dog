@@ -8,7 +8,7 @@ import java.util.*
  * Written by @offbeatwitch.
  * Licensed under MIT.
  */
-class Room(val id: String, val owner: User) {
+class Room(val id: String, var owner: User) {
     val players: ArrayList<Player> = arrayListOf()
     var state: RoomState = RoomState.WAITING
     var scoreThreshold = 10

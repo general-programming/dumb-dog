@@ -72,6 +72,15 @@ class RoomController(val gameState: GameState, val room: Room) {
         }
     }
 
+    fun checkRoomState() {
+        if (room.players.isEmpty()) {
+            gameState.rooms.remove(room.id)
+        } else if (!room.players.any { it.id == room.owner.id }) {
+            room.owner = room.players[0]
+            this.syncPlayers()
+        }
+    }
+
     fun syncPlayers() {
         this.room.broadcast(PacketRoomUpdate(room))
     }
