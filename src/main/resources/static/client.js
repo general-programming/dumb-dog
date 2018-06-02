@@ -76,6 +76,10 @@
             leave: function() {
                 DumbDog.socket.send("LEAVE_ROOM");
 
+                DumbDog.rooms.room = null;
+                DumbDog.round.current = null;
+                DumbDog.round.postRoundInfo = null;
+
                 m.route.set("/lobby");
             },
             create: function() {
@@ -322,6 +326,10 @@
         },
         view: () => {
             return m("div", [
+                m(".user", [
+                    m("span", "Logged in as "),
+                    DumbDog.auth.isLoggedIn() ? m("b", DumbDog.auth.user.username) : []
+                ]),
                 m(LobbyCreateRoom),
                 m(LobbyJoinRoom)
             ])
@@ -331,7 +339,12 @@
     var Room = {
         oninit: async (vnode) => {
             if (!DumbDog.auth.isLoggedIn()) {
-                await DumbDog.auth.checkState();
+                var roomState = {
+                    reqRoomSlug: vnode.attrs.id
+                };
+                m.route.set("/splash", {}, { state: roomState });
+
+                // return await DumbDog.auth.checkState();
             }
 
             if (!DumbDog.socket.connected) {

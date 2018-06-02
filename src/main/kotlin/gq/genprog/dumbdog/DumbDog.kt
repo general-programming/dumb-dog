@@ -39,7 +39,9 @@ fun Application.main() {
     }
 
     install(Sessions) {
-        cookie("dumb_user", UserSession::class, SessionStorageMemory())
+        cookie("dumb_user", UserSession::class, SessionStorageMemory()) {
+            cookie.path = "/"
+        }
     }
 
     install(StatusPages) {
