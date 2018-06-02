@@ -44,4 +44,8 @@ class NetHandlerLobby(val conn: UserConnection, val user: User): NetHandler(conn
             respond(PacketFail(404, "That room doesn't exist!"))
         }
     }
+
+    override fun processDisconnect() {
+//        conn.gameState.users.remove(this.user.id)
+    }
 }

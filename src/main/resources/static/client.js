@@ -46,8 +46,10 @@
                     url: "/api/users/@me"
                 }).then(user => {
                     this.user = user;
+                    return true;
                 }).catch(err => {
-                    m.route.set("/splash")
+                    m.route.set("/splash");
+                    return false;
                 });
             }
         },
@@ -108,6 +110,14 @@
                 if (this.room == null) return [];
 
                 return this.room.players;
+            },
+            setParty: function() {
+                DumbDog.socket.send("PARTY_MODE_SET", { enabled: !DumbDog.rooms.isPartyMode() })
+            },
+            isPartyMode: function () {
+                if (this.room == null) return false;
+
+                return this.room.partyMode;
             }
         },
         socket: {
@@ -277,9 +287,22 @@
         }
     };
 
+    var UserDisplay = {
+        view: () => {
+            if (!DumbDog.auth.isLoggedIn()) {
+                return m(".user")
+            }
+
+            return m(".user", [
+                m("span", "Logged in as "),
+                DumbDog.auth.isLoggedIn() ? m("b", DumbDog.auth.user.username) : []
+            ]);
+        }
+    };
+
     var LobbyCreateRoom = {
         view: () => {
-            return m("div.box", [
+            return m("div.box.left", [
                 m("h3", "Create a Room"),
                 m("p", "Create a new room and invite your friends!"),
                 m("button", { onclick: DumbDog.rooms.create }, "New Room")
@@ -289,7 +312,7 @@
 
     var LobbyJoinRoom = {
         view: () => {
-            return m("div.box", [
+            return m("div.box.right", [
                 m("h3", "Join a Room"),
                 m("p", "Join a friend's room!"),
                 m(SubmittableInput, {
@@ -305,7 +328,8 @@
         view: (vnode) => {
             return m("div.host", [
                 m("button", { onclick: DumbDog.rooms.startGame }, "Start Game"),
-                m("button", { onclick: DumbDog.rooms.skip }, "Skip Round")
+                m("button", { onclick: DumbDog.rooms.skip }, "Skip Round"),
+                m("button", { onclick: DumbDog.rooms.setParty }, DumbDog.rooms.isPartyMode() ? "Disable Party Mode" : "Enable Party Mode")
             ]);
         }
     };
@@ -325,7 +349,11 @@
 
     var Splash = {
         oninit: async () => {
-            await DumbDog.auth.checkState();
+            var result = await DumbDog.auth.checkState();
+
+            if (result) {
+                m.route.set("/lobby");
+            }
         },
         view: () => {
             return m("div", [
@@ -357,11 +385,7 @@
             }
         },
         view: () => {
-            return m("div", [
-                m(".user", [
-                    m("span", "Logged in as "),
-                    DumbDog.auth.isLoggedIn() ? m("b", DumbDog.auth.user.username) : []
-                ]),
+            return m("div.lobby", [
                 m(LobbyCreateRoom),
                 m(LobbyJoinRoom)
             ])
@@ -371,10 +395,10 @@
     var Room = {
         oninit: async (vnode) => {
             if (!DumbDog.auth.isLoggedIn()) {
-                await DumbDog.auth.checkState();
-
-                DumbDog.rooms.setName(vnode.attrs.id);
-                m.route.set("/splash");
+                if (!await DumbDog.auth.checkState()) {
+                    DumbDog.rooms.setName(vnode.attrs.id);
+                    m.route.set("/splash");
+                }
             }
 
             if (!DumbDog.socket.connected) {
@@ -396,11 +420,12 @@
                 m("div.menu", [
                     m("span", "Room slug:"),
                     m(ClipboardTextZone, { value: vnode.attrs.id }),
-                    m("button", { onclick: DumbDog.rooms.leave }, "Leave Room"),
                     m("p", "You can also give the URL directly to your friends!"),
                     DumbDog.auth.doesOwnCurrentRoom() ? [
                         m(HostUtilities)
                     ] : [],
+                    m("button.t", { onclick: DumbDog.rooms.leave }, "Leave Room"),
+                    m("h4", "Players"),
                     m("ul.players", DumbDog.rooms.getPlayers().map(
                         (player) => {
                             return m("li.player", player.username + ` (${player.correct} points)`)
@@ -429,4 +454,6 @@
         "/lobby": Lobby,
         "/room/:id": Room
     });
+
+    m.mount(document.getElementById("user-hook"), UserDisplay);
 })();

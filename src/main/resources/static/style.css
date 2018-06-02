@@ -9,6 +9,10 @@ body {
     font-family: sans-serif;
 }
 
+h4 {
+    margin: 3px 0;
+}
+
 input {
     padding: 10px;
     border: 0;
@@ -26,16 +30,44 @@ button {
     border-radius: 10px;
     color: #fff;
     cursor: pointer;
-    transition: background 0.25s, color 0.25s;
+    transition: background .25s, color .25s;
 }
 
 button.attached {
+    position: relative;
     border-radius: 10px 10px 10px 0;
+}
+
+button.attached::before {
+    display: inline-block;
+    position: absolute;
+    bottom: 0;
+    left: -3px;
+    content: ' ';
+    height: 20px;
+    width: 3px;
+    background: #222;
+    transition: background-color .25s;
 }
 
 button:hover {
     background: #fff;
     color: #111;
+}
+
+button:hover::before {
+    background: #fff;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    opacity: 1;
+    transition: opacity .2s;
+}
+
+a:hover {
+    opacity: 0.6;
 }
 
 .nav {
@@ -46,19 +78,75 @@ button:hover {
     margin-bottom: 5px;
 }
 
+#user-hook {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+#user-hook > div::before {
+    display: inline-block;
+    content: '//';
+    margin-right: 10px;
+}
+
+div.links.right {
+    float: right;
+    text-align: right;
+}
+
+div.links > a:not(:last-child):after {
+    content: '/';
+    margin: 0 4px;
+}
+
 #app {
     padding: 0 10px;
 }
 
-.box {
-    display: inline-block;
-    margin: 0;
-    width: 50%;
+.lobby {
     text-align: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-button:not(:last-child) {
+.box {
+    position: relative;
+    display: inline-block;
+    height: 200px;
+    margin-top: 10px;
+}
+
+.box h3 {
+    margin-top: 0;
+}
+
+.box.left {
+    padding-right: 40px;
+    text-align: right;
+    border-right: 1px solid #fff;
+}
+
+.box.left::after {
+    position: absolute;
+    content: 'OR';
+    background: #222;
+    top: 83px;
+    right: -11px;
+    font-weight: 200;
+    padding: 5px 0;
+}
+
+.box.right {
+    padding-left: 40px;
+    text-align: left;
+}
+
+button:not(:last-of-type) {
     margin-right: 10px;
+}
+
+button.t {
+    margin-top: 10px;
 }
 
 .game > * {
@@ -68,4 +156,17 @@ button:not(:last-child) {
 
 .game > *:not(:last-child) {
     margin-right: 15px;
+}
+
+.game ul.players {
+    margin: 0;
+    list-style: '@';
+}
+
+.game select {
+    padding: 10px;
+    background: transparent;
+    color: #fff;
+    border: 3px solid #fff;
+    border-radius: 10px;
 }

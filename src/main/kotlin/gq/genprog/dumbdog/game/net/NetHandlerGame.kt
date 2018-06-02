@@ -2,6 +2,7 @@ package gq.genprog.dumbdog.game.net
 
 import gq.genprog.dumbdog.game.Player
 import gq.genprog.dumbdog.game.net.packets.PacketChangeState
+import gq.genprog.dumbdog.game.net.packets.PacketPartyMode
 import gq.genprog.dumbdog.game.net.packets.PacketSubmitAnswer
 import gq.genprog.dumbdog.game.net.packets.PacketWrapper
 
@@ -39,12 +40,33 @@ class NetHandlerGame(val conn: UserConnection, val player: Player): NetHandler(c
                     player.room.controller(conn.gameState).answerSubmitted(true)
                 }
             }
+
+            "PARTY_MODE_SET" -> {
+                val pkt: PacketPartyMode = gson.fromJson(packet.d, PacketPartyMode::class.java)
+                this.handlePartyMode(pkt)
+            }
         }
     }
 
     suspend fun handleSubmitAnswer(pkt: PacketSubmitAnswer) {
         player.answer = pkt.answerKey
         player.room.controller(conn.gameState).answerSubmitted(false)
+    }
+
+    suspend fun handlePartyMode(pkt: PacketPartyMode) {
+        if (player.room.isOwner(player)) {
+            if (pkt.enabled) {
+                player.room.partyMode = true
+                player.room.players.remove(player)
+                player.room.partyHost = player
+            } else {
+                player.room.partyHost = null
+                player.room.players.add(player)
+                player.room.partyMode = false
+            }
+
+            player.room.controller(conn.gameState).syncPlayers()
+        }
     }
 
     override fun processDisconnect() {

@@ -77,10 +77,14 @@ class RoomController(val gameState: GameState, val room: Room) {
     }
 
     fun checkRoomState() {
+        if (room.partyMode && gameState.users.containsKey(room.owner.id)) {
+            return
+        }
+
         if (room.players.isEmpty()) {
             gameState.rooms.remove(room.id)
         } else if (!room.players.any { it.id == room.owner.id }) {
-            room.owner = room.players[0]
+            room.owner = room.players.first()
             this.syncPlayers()
         }
     }
