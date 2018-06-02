@@ -41,13 +41,13 @@ class RoomController(val gameState: GameState, val room: Room) {
 
                 it.cleanup()
 
-                if (it.score >= it.room.scoreThreshold) {
+                if (it.correct >= it.room.scoreThreshold) {
                     // Player wins
                     hasPlayerWon = true
                 }
             }
 
-            room.broadcast(PacketRoundEnd(correct, hasPlayerWon))
+            room.broadcast(PacketRoundEnd(correct, question.text, hasPlayerWon))
             this.syncPlayers()
 
             async {

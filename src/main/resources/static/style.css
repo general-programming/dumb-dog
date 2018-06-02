@@ -228,7 +228,7 @@ button.t {
 }
 
 @media (max-width: 700px) {
-    .gamebox .menu > span {
+    .gamebox .menu > .info {
         display: none;
     }
 

@@ -416,14 +416,16 @@
             }
         },
         view: (vnode) => {
-            var gameClass = "";
-            if (DumbDog.rooms.isPartyMode()) gameClass += "party";
-            if (DumbDog.auth.doesOwnCurrentRoom()) gameClass += "host";
+            var gameClass = [];
+            if (DumbDog.rooms.isPartyMode()) gameClass.push("party");
+            if (DumbDog.auth.doesOwnCurrentRoom()) gameClass.push("host");
 
             return m("div.gamebox", [
                 m("div.menu", [
-                    m("span", "Room slug: ", m(ClipboardTextZone, { value: vnode.attrs.id })),
-                    m("p", "You can also give the URL directly to your friends!"),
+                    m(".info", [
+                        m("span", "Room slug: ", m(ClipboardTextZone, { value: vnode.attrs.id })),
+                        m("p", "You can also give the URL directly to your friends!")
+                    ]),
                     DumbDog.auth.doesOwnCurrentRoom() ? [
                         m(HostUtilities)
                     ] : [],
@@ -435,16 +437,22 @@
                         })
                     )
                 ]),
-                m("div.game", { className: gameClass }, DumbDog.round.hasStarted() ? [
+                m("div.game", { className: gameClass.join(" ") }, DumbDog.round.hasStarted() ? [
                     m("img", { src: DumbDog.round.getImageUrl() }),
-                    m("select", { oninput: m.withAttr("value", DumbDog.round.setAnswer) },
+                    m("select[autocomplete=off]", { oninput: m.withAttr("value", DumbDog.round.setAnswer), selectedIndex: 0 },
                         m("option[selected]", { value: "" }, "Select answer..."),
                         DumbDog.round.getOptions().map((item) => {
                             return m("option", { value: item }, "How To " + DumbDog.util.capitalize(item))
                         })
                     )
                 ] : [
-                    m("h1.faded", "Waiting for round to start...")
+                    DumbDog.round.isPostRound() ? m("div.postround", [
+                        m("h2", "Round over!"),
+                        m("p", "The correct answer was ", m("b", "How To ", DumbDog.util.capitalize(DumbDog.round.postRoundInfo.answer))),
+                        m("div.correct", DumbDog.round.postRoundInfo.correct.map(player => {
+                            return m("div.entry", m("b", player.username), " +1")
+                        }))
+                    ]) : m("h1.faded", "Waiting for round to start...")
                 ])
             ]);
         }
