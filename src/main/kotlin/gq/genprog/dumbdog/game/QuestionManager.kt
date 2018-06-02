@@ -1,5 +1,6 @@
 package gq.genprog.dumbdog.game
 
+import gq.genprog.dumbdog.getResourceList
 import java.net.URL
 import java.util.*
 

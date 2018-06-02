@@ -1,5 +1,7 @@
 package gq.genprog.dumbdog.routes
 
+import gq.genprog.dumbdog.error.NotFoundException
+import gq.genprog.dumbdog.error.UnauthorizedException
 import gq.genprog.dumbdog.game.GameState
 import gq.genprog.dumbdog.game.Room
 import gq.genprog.dumbdog.session.UserSession
