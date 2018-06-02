@@ -67,6 +67,7 @@ class RoomController(val gameState: GameState, val room: Room) {
 
         room.timeoutJob = launch {
             delay(Duration.ofSeconds(room.roomTimeout))
+            room.timeoutJob = null
             this@RoomController.answerSubmitted(true)
         }
     }

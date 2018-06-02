@@ -22,6 +22,7 @@ class NetHandlerGame(val conn: UserConnection, val player: Player): NetHandler(c
             }
 
             "LEAVE_ROOM" -> {
+                player.leaveRoom()
                 conn.handler = NetHandlerLobby(conn, player)
                 respond(PacketChangeState(conn.handler.state))
             }

@@ -53,7 +53,7 @@
             room: null,
             roomName: null,
             setName: function(name) {
-                this.roomName = name;
+                DumbDog.rooms.roomName = name;
             },
             canJoin: function() {
                 return this.roomName != null;
@@ -64,7 +64,7 @@
 
                 m.request({
                     method: "GET",
-                    url: "/api/room/" + this.roomName
+                    url: "/api/room/" + DumbDog.rooms.roomName
                 }).then(room => {
                     this.room = room;
 
@@ -72,6 +72,11 @@
                 }).catch(err => {
                     console.error(err)
                 });
+            },
+            leave: function() {
+                DumbDog.socket.send("LEAVE_ROOM");
+
+                m.route.set("/lobby");
             },
             create: function() {
                 m.request({
@@ -85,12 +90,12 @@
             },
             startGame: function () {
                 if (DumbDog.auth.doesOwnCurrentRoom()) {
-                    DumbDog.socket.send("START_GAME", {})
+                    DumbDog.socket.send("START_GAME")
                 }
             },
             skip: function() {
                 if (DumbDog.auth.doesOwnCurrentRoom()) {
-                    DumbDog.socket.send("SKIP_ROUND", {})
+                    DumbDog.socket.send("SKIP_ROUND")
                 }
             },
             getPlayers: function() {
@@ -144,7 +149,7 @@
                 });
             },
             send: function(type, packet) {
-                var data = JSON.stringify({ t: type, d: packet });
+                var data = JSON.stringify({ t: type, d: packet || {} });
 
                 this.ws.send(data);
             },
@@ -348,6 +353,7 @@
                 m("div.menu", [
                     m("span", "Room slug:"),
                     m(ClipboardTextZone, { value: vnode.attrs.id }),
+                    m("button", { onclick: DumbDog.rooms.leave }, "Leave Room"),
                     m("p", "You can also give the URL directly to your friends!"),
                     DumbDog.auth.doesOwnCurrentRoom() ? [
                         m(HostUtilities)
