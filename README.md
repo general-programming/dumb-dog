@@ -4,7 +4,7 @@ A multiplayer game about guessing WikiHow titles from illustrations
 
 ## Play!
 
-[coming soon]
+You can [play this online](http://dumbdog.offbeatwit.ch)! Semi-modern browser is required.
 
 ## Host!
 
