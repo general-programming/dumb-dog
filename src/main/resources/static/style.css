@@ -77,7 +77,8 @@ a:hover {
     background: #333;
     border-bottom: 2px solid;
     border-image: linear-gradient(180deg, #333, #222);
-    margin-bottom: 5px;
+    position: relative;
+    z-index: 2;
 }
 
 #user-hook {
@@ -89,6 +90,42 @@ a:hover {
     display: inline-block;
     content: '//';
     margin-right: 10px;
+}
+
+#msg-mount {
+    position: absolute;
+}
+
+#msg-mount .message {
+    position: relative;
+    z-index: 1;
+    background: #d09090;
+    border: 1px solid #bf2222;
+    border-radius: 0 0 10px 10px;
+    border-top: 0;
+    margin: 0 20px;
+    padding: 10px 20px;
+    color: #bf2222;
+    animation: dropdown 1s forwards;
+    visibility: hidden;
+}
+
+#msg-mount .message p {
+    margin: 0;
+}
+
+@keyframes dropdown {
+    0% {
+        visibility: hidden;
+        top: -100%;
+    }
+    1% {
+        visibility: visible;
+    }
+    100% {
+        visibility: visible;
+        top: 0;
+    }
 }
 
 div.links.right {
@@ -106,6 +143,7 @@ div.links > a:not(:last-child):after {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
+    margin-top: 5px;
 }
 
 .lobby {

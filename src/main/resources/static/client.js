@@ -3,6 +3,16 @@
 
     // Model
     var DumbDog = {
+        debug: false,
+        message: null,
+        setMessage: function(msg) {
+            DumbDog.message = msg;
+
+            setTimeout(() => {
+                DumbDog.message = null;
+                m.redraw();
+            }, 6000);
+        },
         auth: {
             user: null,
             username: null,
@@ -27,7 +37,7 @@
 
                     m.route.set("/lobby");
                 }).catch(err => {
-                    console.error(err)
+                    DumbDog.setMessage(`Failed to log in! (${err.code})`);
                 });
             },
             doesOwnCurrentRoom: function() {
@@ -74,7 +84,7 @@
 
                     m.route.set("/room/:id", { id: room.id });
                 }).catch(err => {
-                    console.error(err)
+                    DumbDog.setMessage("That room doesn't exist!")
                 });
             },
             leave: function() {
@@ -133,7 +143,8 @@
                 this.ws.onmessage = (d) => {
                     var packet = JSON.parse(d.data);
 
-                    console.log(packet);
+                    if (DumbDog.debug)
+                        console.log(packet);
 
                     if (packet.t === "CHANGE_STATE") {
                         this.state = packet.d.newState;
@@ -146,13 +157,16 @@
                 };
 
                 this.ws.onclose = (frame) => {
-                    console.log("Socket closed");
-                    console.log(frame);
+                    if (DumbDog.debug) {
+                        console.log("Socket closed");
+                        console.log(frame);
+                    }
 
                     this.ws = null;
                     this.connected = false;
 
                     if (frame.code !== 403) {
+                        DumbDog.setMessage("Socket disconnected. Trying to reconnect...");
                         setTimeout(DumbDog.socket.connect.bind(DumbDog.socket), 3000)
                     }
                 };
@@ -160,6 +174,8 @@
                 return new Promise((resolve, reject) => {
                     this.ws.onopen = () => {
                         this.connected = true;
+                        DumbDog.setMessage(null);
+
                         resolve();
                     };
 
@@ -171,7 +187,8 @@
             send: function(type, packet) {
                 var data = JSON.stringify({ t: type, d: packet || {} });
 
-                console.log("SEND: " + type);
+                if (DumbDog.debug)
+                    console.log("SEND: " + type);
 
                 this.ws.send(data);
             },
@@ -271,8 +288,12 @@
 
     var Message = {
         view: (vnode) => {
+            if (DumbDog.message == null) {
+                return null;
+            }
+
             return m("div.message", vnode.attrs, [
-                m("p", vnode.children)
+                m("p", DumbDog.message)
             ]);
         }
     };
@@ -378,7 +399,8 @@
                         m.route.set("/room/:id", { id: DumbDog.rooms.roomName })
                     }
                 }).catch(err => {
-                    console.error(err)
+                    DumbDog.setMessage("Could not connect to socket :(");
+                    m.route.set("/splash");
                 });
             } else if (!DumbDog.auth.isLoggedIn()) {
                 m.route.set("/splash")
@@ -408,7 +430,7 @@
 
                     m.redraw();
                 }).catch(err => {
-                    console.error(err);
+                    DumbDog.setMessage("Could not connect to socket :( Returning to lobby...");
                     m.route.set("/lobby")
                 })
             } else {
@@ -466,5 +488,6 @@
         "/room/:id": Room
     });
 
+    m.mount(messageMount, Message);
     m.mount(document.getElementById("user-hook"), UserDisplay);
 })();
