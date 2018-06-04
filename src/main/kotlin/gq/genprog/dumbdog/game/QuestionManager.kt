@@ -1,6 +1,6 @@
 package gq.genprog.dumbdog.game
 
-import gq.genprog.dumbdog.getResourceList
+import java.io.File
 import java.net.URL
 import java.util.*
 
@@ -14,21 +14,27 @@ class QuestionManager(private val state: GameState) {
     val questions: HashMap<String, QuestionEntry> = hashMapOf()
 
     init {
-        javaClass.getResourceList("/questions").forEach {
-            var key = state.generator.generateShortId()
-            val text = it.substringAfter('/').substringBeforeLast('.')
-                    .replace('-', ' ')
+        val dir = File("questions/")
+        if (dir.isDirectory) {
+            dir.listFiles().forEach {
+                var key = state.generator.generateShortId()
+                val path = it.path
+                val text = path.substringAfter('/').substringBeforeLast('.')
+                        .replace('-', ' ')
 
-            while (questions.containsKey(key)) {
-                key = state.generator.generateShortId()
+                while (questions.containsKey(key)) {
+                    key = state.generator.generateShortId()
+                }
+
+                questions[key] = QuestionEntry(it.toURI().toURL(), text)
             }
 
-            questions[key] = QuestionEntry(javaClass.getResource("/questions/$it"), text)
+            println("Loaded ${questions.size} questions.")
+        } else {
+            println("Missing questions directory. You won't be able to start a game without it!")
         }
 
         keys = questions.keys.toTypedArray()
-
-//        println(keys.joinToString(", ", "[", "]"))
     }
 
     fun randomQuestion(): Question {

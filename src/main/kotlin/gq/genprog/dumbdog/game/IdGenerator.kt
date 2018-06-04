@@ -12,6 +12,11 @@ class IdGenerator {
     private val animals = javaClass.getResource("/pools/animals.txt").readText().lines()
     private val letters = "abcdefghijklmnopqrstuvwxyz0123456789"
 
+    init {
+        println("Loaded ${adjectives.size} adjectives.")
+        println("Loaded ${animals.size} animals.")
+    }
+
     fun <T> List<T>.randomFrom(): T {
         return this[r.nextInt(this.size)]
     }
