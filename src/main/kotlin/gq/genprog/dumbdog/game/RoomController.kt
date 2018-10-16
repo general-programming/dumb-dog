@@ -3,7 +3,6 @@ package gq.genprog.dumbdog.game
 import gq.genprog.dumbdog.game.net.packets.PacketNewRound
 import gq.genprog.dumbdog.game.net.packets.PacketRoomUpdate
 import gq.genprog.dumbdog.game.net.packets.PacketRoundEnd
-import gq.genprog.dumbdog.game.net.packets.PacketWinAnnouncement
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
@@ -46,8 +45,6 @@ class RoomController(val gameState: GameState, val room: Room) {
                     // Player wins
                     hasPlayerWon = true
                     room.state = Room.RoomState.END
-
-                    room.broadcast(PacketWinAnnouncement(it))
                 }
             }
 
