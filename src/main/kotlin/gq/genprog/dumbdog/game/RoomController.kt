@@ -56,13 +56,13 @@ class RoomController(val gameState: GameState, val room: Room) {
 
             async {
                 delay(5, TimeUnit.SECONDS)
-                this@RoomController.nextRound()
+                this@RoomController.nextRound(false)
             }
         }
     }
 
-    fun nextRound() {
-        if (room.state == Room.RoomState.END) {
+    fun nextRound(newGame: Boolean) {
+        if (room.state == Room.RoomState.END && !newGame) {
             return
         }
 
@@ -86,7 +86,7 @@ class RoomController(val gameState: GameState, val room: Room) {
     }
 
     fun checkRoomState() {
-        if (room.partyMode && gameState.users.containsKey(room.owner.id)) {
+        if (room.partyMode && gameState.users.containsKey(room.owner.id) && room.state != Room.RoomState.END) {
             return
         }
 

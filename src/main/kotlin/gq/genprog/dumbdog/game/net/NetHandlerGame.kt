@@ -31,7 +31,7 @@ class NetHandlerGame(val conn: UserConnection, val player: Player): NetHandler(c
 
             "START_GAME" -> {
                 if (player.room.isOwner(player)) {
-                    player.room.controller(conn.gameState).nextRound()
+                    player.room.controller(conn.gameState).nextRound(true)
                 }
             }
 
