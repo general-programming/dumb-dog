@@ -3,6 +3,7 @@ package gq.genprog.dumbdog.game
 import gq.genprog.dumbdog.game.net.packets.PacketNewRound
 import gq.genprog.dumbdog.game.net.packets.PacketRoomUpdate
 import gq.genprog.dumbdog.game.net.packets.PacketRoundEnd
+import gq.genprog.dumbdog.game.net.packets.PacketWinAnnouncement
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
@@ -44,6 +45,9 @@ class RoomController(val gameState: GameState, val room: Room) {
                 if (it.correct >= it.room.scoreThreshold) {
                     // Player wins
                     hasPlayerWon = true
+                    room.state = Room.RoomState.END
+
+                    room.broadcast(PacketWinAnnouncement(it))
                 }
             }
 
@@ -58,6 +62,11 @@ class RoomController(val gameState: GameState, val room: Room) {
     }
 
     fun nextRound() {
+        if (room.state == Room.RoomState.END) {
+            return
+        }
+
+        room.state = Room.RoomState.STARTED
         room.current = gameState.questions.randomQuestion()
         val choices = mutableListOf(
                 room.current!!.text,

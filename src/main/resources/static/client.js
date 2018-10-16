@@ -66,6 +66,7 @@
         rooms: {
             room: null,
             roomName: null,
+            winners: [],
             setName: function(name) {
                 DumbDog.rooms.roomName = name;
             },
@@ -209,6 +210,9 @@
                     DumbDog.round.postRoundInfo = null;
 
                     m.redraw();
+                },
+                "WINNER": (pkt) => {
+                    DumbDog.rooms.winners.push(pkt.winner)
                 },
                 "END_ROUND": (info) => {
                     DumbDog.round.current = null;
@@ -469,11 +473,17 @@
                     )
                 ] : [
                     DumbDog.round.isPostRound() ? m("div.postround", [
-                        m("h2", "Round over!"),
+                        m("h2", DumbDog.round.postRoundInfo.isGameEnd ? "Game over!" : "Round over!"),
                         m("p", "The correct answer was ", m("b", "How To ", DumbDog.util.capitalize(DumbDog.round.postRoundInfo.answer))),
                         m("div.correct", DumbDog.round.postRoundInfo.correct.map(player => {
                             return m("div.entry", m("b", player.username), " +1")
-                        }))
+                        })),
+                        DumbDog.round.postRoundInfo.isGameEnd ? [
+                            m("h3", "Winners!"),
+                            m("div.correct", DumbDog.rooms.winners.map(player => {
+                                return m("div.entry", m("b", player.username), " with ", m("b", player.correct), " points!")
+                            }))
+                        ] : []
                     ]) : m("h1.faded", "Waiting for round to start...")
                 ])
             ]);
